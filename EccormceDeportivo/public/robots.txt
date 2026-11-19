@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /catalogo
+Allow: /producto/*
+Allow: /envios
+Allow: /terminos
+
+# Bloquear indexación de rutas privadas y administrativas
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /checkout
+Disallow: /pedido-confirmado
+Disallow: /rastreo
+
+# Ubicación del Sitemap XML
+Sitemap: https://victoria-frontend-web.onrender.com/sitemap.xml
+

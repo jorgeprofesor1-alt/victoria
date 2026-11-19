@@ -1,0 +1,50 @@
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Environment files (sensitive credentials)
+.env
+.env.local
+.env.*.local
+*.env
+!*.env.example
+!*.env.production.example
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary uploads (keep folder structure if needed)
+uploads/*
+!uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+screenshots/
+playwright-report.json
+playwright-audit-result.json
+audit-playwright.js
+
+manual_screenshots/
+MANUAL_DE_USUARIO_GESTION_INSTITUCIONAL.md
+
+MANUAL_AUDITORIA_QA.md
+PROJECT_CONTEXT.md
