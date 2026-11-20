@@ -30,7 +30,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        value: "https://victoria-frontend-web.onrender.com"
+        value: "https://tienda-victoria-pasto.netlify.app,https://victoria-frontend-web.onrender.com"
       - key: UPLOAD_DIR
         value: uploads
       - key: RUN_SEED
