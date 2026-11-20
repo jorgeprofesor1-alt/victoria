@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
-let rawApiUrl = import.meta.env.VITE_API_URL || 'https://victoria-backend-api.onrender.com/api/v1';
+let rawApiUrl = import.meta.env.VITE_API_URL || 'https://victoria-backend-api-production.up.railway.app/api/v1';
 
-// Si Render inyectó el hostname interno sin TLD público (ej. 'victoria-backend-api')
+// Si la URL no contiene dominio completo o apunta a render antiguo
 if (rawApiUrl === 'victoria-backend-api' || !rawApiUrl.includes('.')) {
-  rawApiUrl = 'https://victoria-backend-api.onrender.com/api/v1';
+  rawApiUrl = 'https://victoria-backend-api-production.up.railway.app/api/v1';
 }
 
 const formattedApiUrl = rawApiUrl.startsWith('http')
