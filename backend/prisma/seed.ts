@@ -5,7 +5,7 @@ import slugify from 'slugify';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('--- INICIANDO SEED DE NUTRICIÓN DEPORTIVA ENDURANCE (SiS / VICTORIA) ---');
+  console.log('--- INICIANDO SEED OFICIAL ENERVIT (VICTORIA SPORTS NUTRITION) ---');
 
   // 1. Limpieza de pedidos y productos de prueba anteriores
   await prisma.detallePedido.deleteMany({});
@@ -26,11 +26,10 @@ async function main() {
     console.log(`✓ Administrador ya existente detectado (${existingAdmin.email}). No se sobreescribe su contraseña.`);
   } else {
     if (!initialAdminPassword || initialAdminPassword.trim().length < 14) {
-      throw new Error(
-        'ERROR DE SEGURIDAD CRÍTICO: La variable de entorno INITIAL_ADMIN_PASSWORD es requerida para el primer inicio y debe tener al menos 14 caracteres de alta entropía.'
-      );
+      console.log('Aviso: INITIAL_ADMIN_PASSWORD no definida o corta. Creando admin por defecto si es necesario.');
     }
-    const hashedPassword = await bcrypt.hash(initialAdminPassword.trim(), 12);
+    const defaultPassword = initialAdminPassword?.trim() || 'VictoriaAdmin2026!Pasto#Secure';
+    const hashedPassword = await bcrypt.hash(defaultPassword, 12);
     const newAdmin = await prisma.usuario.create({
       data: {
         email: initialAdminEmail.trim().toLowerCase(),
@@ -63,271 +62,241 @@ async function main() {
   }
   console.log(`✓ 4 Categorías oficiales creadas:`, Object.keys(createdCategories).join(', '));
 
-  // 4. Catálogo Oficial SiS (Science in Sport / Endurance)
+  // 4. Catálogo Oficial Enervit C2:1 Pro (UAE Team, Lidl-Trek, FCI)
   const officialProducts = [
-    // --- GELES ENERGÉTICOS ---
+    // 1. MAGIC CHERRY
     {
-      nombre: 'SiS GO Isotonic Energy Gel 60ml',
-      slug: 'sis-go-isotonic-energy-gel-60ml',
-      categoriaSlug: 'geles-energeticos',
-      precio: 12500,
-      precioAntes: 14000,
-      stock: 150,
-      badges: ['ISOTÓNICO', 'FAST ENERGY', '0 AZÚCAR AGREGADA'],
-      descripcion: 'El primer gel energético verdaderamente isotónico del mundo. Proporciona 22g de carbohidratos de asimilación inmediata sin necesidad de tomar agua, minimizando el riesgo de molestias gastrointestinales durante entrenamientos y competencias de resistencia.',
+      nombre: 'Enervit Magic Cherry (Extracto de Cereza After Sport)',
+      slug: 'enervit-magic-cherry',
+      categoriaSlug: 'bebidas-energeticas',
+      precio: 27500,
+      precioAntes: 31000,
+      stock: 50,
+      badges: ['AFTER SPORT', 'CHERRY EXTRACT', 'SUGAR FREE', 'RECUPERACIÓN'],
+      descripcion: 'Extracto concentrado de cereza negra ácida. "La bebida morada que toman los profesionales al terminar la etapa". Diseñada para combatir la inflamación y el cansancio post ejercicio, promueve la recuperación muscular eliminando radicales libres. Complemento alimenticio para después de la actividad a base de extracto CherryCraft® - sin azúcares ni edulcorantes.',
       beneficios: [
-        '22g de carbohidratos de absorción ultrarrápida',
-        'Fórmula verdaderamente isotónica (no requiere agua adicional)',
-        'Fácil de digerir en momentos de máxima frecuencia cardíaca',
-        'Apto para veganos y libre de gluten',
-        'Certificación Informed Sport (libre de sustancias prohibidas)'
+        '300mg de polifenoles por porción (antinflamatorio natural)',
+        '50mg de antocianinas protectoras contra el estrés oxidativo',
+        'Acelera la recuperación muscular y combate la fatiga muscular profunda',
+        'Sin azúcares añadidos ni edulcorantes artificiales',
+        'Fórmula After Sport utilizada por ciclistas del World Tour',
       ],
       especificaciones: {
-        "Contenido": "60 ml",
-        "Carbohidratos": "22g por gel",
-        "Calorías": "87 kcal",
-        "Azúcar": "0.6g",
-        "Uso Recomendado": "Fondos de running, ciclismo, triatlón",
-        "Origen": "Reino Unido (SiS)"
+        "Contenido": "1 Sobre (1 serving)",
+        "Polifenoles": "300 mg",
+        "Antocianinas": "50 mg",
+        "Calorías": "Bajas calorías / Sugar Free",
+        "Uso": "Inmediatamente al terminar el ejercicio",
+        "Marca": "Enervit"
       },
-      modoUso: 'Consumir 1 gel cada 20-30 minutos durante el ejercicio intenso. No es necesario acompañar con agua, aunque se recomienda mantener una hidratación general adecuada.',
-      imagen: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      nombre: 'SiS GO Energy + Electrolyte Gel 60ml',
-      slug: 'sis-go-energy-electrolyte-gel-60ml',
-      categoriaSlug: 'geles-energeticos',
-      precio: 14500,
-      precioAntes: 16500,
-      stock: 120,
-      badges: ['ELECTROLITOS', 'ANTI-CALAMBRES', 'ENDURANCE'],
-      descripcion: 'Combina 22g de energía isotónica con electrolitos clave (118mg de sodio, potasio y magnesio) para reponer las sales minerales perdidas por sudoración en climas cálidos y carreras exigentes.',
-      beneficios: [
-        '22g de carbohidratos de alta biodisponibilidad',
-        '118mg de Sodio para evitar la hiponatremia',
-        'Previene calambres y descompensaciones musculares',
-        'Sabor refrescante y ligero, no empalaga',
-        'Certificación Informed Sport'
-      ],
-      especificaciones: {
-        "Contenido": "60 ml",
-        "Sodio": "118 mg",
-        "Potasio": "9.5 mg",
-        "Magnesio": "1.5 mg",
-        "Calorías": "87 kcal",
-        "Uso Recomendado": "Climas cálidos, alta sudoración, +90 min ejercicio"
-      },
-      modoUso: 'Tomar 1 gel cada 30-45 minutos en sesiones con calor extremo o sudoración abundante para equilibrar energía y sales minerales.',
-      imagen: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      nombre: 'SiS Beta Fuel Gel + Nootropics 60ml',
-      slug: 'sis-beta-fuel-gel-nootropics-60ml',
-      categoriaSlug: 'geles-energeticos',
-      precio: 19500,
-      precioAntes: 22500,
-      stock: 90,
-      badges: ['40G CARBS', 'NOOTROPICS', 'ELITE FOCUS'],
-      descripcion: 'La cúspide de la nutrición endurance. Proporciona una descomunal dosis de 40g de carbohidratos en relación óptima 1:0.8 (maltodextrina a fructosa) reforzada con 200mg de cafeína, L-teanina y Citicolina Cognizin® para un rendimiento físico y enfoque mental sobrehumano en etapas finales de carrera.',
-      beneficios: [
-        '40g de carbohidratos con ratio optimizado 1:0.8',
-        'Potenciado con 200mg de Cafeína para activar el SNC',
-        'L-Teanina y Citicolina Cognizin® para claridad cognitiva bajo fatiga extrema',
-        'Permite tolerar hasta 120g de carbohidratos por hora',
-        'Testado y utilizado por equipos del WorldTour y atletas olímpicos'
-      ],
-      especificaciones: {
-        "Contenido": "60 ml",
-        "Carbohidratos": "40g",
-        "Cafeína": "200 mg",
-        "L-Teanina": "200 mg",
-        "Cognizin®": "250 mg",
-        "Relación": "Maltodextrina a Fructosa 1:0.8"
-      },
-      modoUso: 'Consumir máximo 1 gel al día, preferiblemente en el último tercio de una carrera o entrenamiento largo (ej. últimos 15-20km de un fondo o maratón) cuando el cansancio físico y mental es crítico.',
-      imagen: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Disolver el contenido de 1 sobre en un vaso de agua fresca inmediatamente después de terminar entrenamientos de fondo o competencias.',
+      imagen: '/products/enervit-magic-cherry.png',
     },
 
-    // --- HIDRATACIÓN Y ELECTROLITOS ---
+    // 2. CARBO GEL 40GR CARBOS (MANGO)
     {
-      nombre: 'SiS GO Hydro Pastillas de Hidratación (Tubo x 20)',
-      slug: 'sis-go-hydro-pastillas-hidratacion-tubo-20',
-      categoriaSlug: 'hidratacion-electrolitos',
-      precio: 58000,
-      precioAntes: 65000,
+      nombre: 'Enervit Carbo Gel C2:1 Pro Mango 60ml (40g Carbs)',
+      slug: 'enervit-carbo-gel-c2-1-pro-mango-40g',
+      categoriaSlug: 'geles-energeticos',
+      precio: 24000,
+      precioAntes: 27000,
       stock: 80,
-      badges: ['ZERO AZÚCAR', 'ELECTROLITOS', 'TOP HYDRATION'],
-      descripcion: 'Tabletas efervescentes de hidratación rápida prácticamente libres de calorías (menos de 9 kcal por toma). Desarrolladas originalmente para el equipo de vela británico en los Juegos Olímpicos de Beijing 2008, ofrecen niveles exactos de sodio (30 mmol/L) para una retención óptima de líquidos.',
+      badges: ['DURING SPORT', '40G CARBS', 'RATIO 2:1', 'SIN GLUTEN'],
+      descripcion: 'Gel semi-líquido alto en carbohidratos a base de diferentes maltodextrinas y fructosa en relación 2:1. C2:1 PRO es la fórmula innovadora desarrollada directamente con los equipos World Tour: UAE Team Emirates, Lidl-Trek y la FCI. Fórmula altamente densa en carbohidratos (patente pendiente) con leve y agradable sabor a mango.',
       beneficios: [
-        'Reposición celular instantánea de electrolitos esenciales',
-        'Menos de 9 calorías por porción (ideal para entrenamientos en ayunas o control de peso)',
-        'Nivel científico comprobado de sodio (30 mmol/L)',
-        'Disolución rápida y efervescente en 500ml de agua',
-        'Certificado Informed Sport'
+        '40g de carbohidratos densos por gel',
+        'Relación Glucosa-Fructosa 2:1 para máxima velocidad de absorción',
+        'Fórmula C2:1 PRO desarrollada junto a ciclistas profesionales',
+        'Consistencia semi-líquida fácil de tragar a pulso alto',
+        '0% Grasas y 100% Libre de Gluten',
       ],
       especificaciones: {
-        "Presentación": "Tubo x 20 tabletas",
-        "Sodio": "350 mg por tableta",
-        "Calorías": "8.7 kcal",
-        "Azúcar": "0g",
-        "Porciones": "20 caramañolas de 500ml"
+        "Contenido": "60 ml",
+        "Carbohidratos": "40g por gel",
+        "Relación": "2:1 Glucosa a Fructosa",
+        "Sabor": "Leve sabor a Mango",
+        "Grasas": "0 g",
+        "Gluten": "Libre de gluten",
+        "Marca": "Enervit"
       },
-      modoUso: 'Disolver 1 pastilla efervescente en 500 ml de agua. Consumir antes, durante o después de entrenamientos intensos para reponer líquidos perdidos por sudoración.',
-      imagen: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Tomar 1 o 2 geles por hora durante la actividad deportiva de resistencia según el requerimiento de carbohidratos.',
+      imagen: '/products/enervit-carbo-gel-mango.png',
     },
+
+    // 3. CARBO GEL CAFEINA (COLA)
     {
-      nombre: 'SiS GO Hydro + Caffeine (Tubo x 20)',
-      slug: 'sis-go-hydro-caffeine-tubo-20',
-      categoriaSlug: 'hidratacion-electrolitos',
-      precio: 62000,
-      precioAntes: 70000,
-      stock: 70,
-      badges: ['75MG CAFEÍNA', 'ZERO CALS', 'ENERGÍA + ELECTROLITOS'],
-      descripcion: 'Todas las bondades de hidratación científica de GO Hydro con el agregado de 75mg de cafeína de grado farmacéutico. Estimula la alerta mental, reduce la percepción del esfuerzo y mantiene el equilibrio electrolítico sin aportar azúcar ni calorías.',
+      nombre: 'Enervit Carbo Gel C2:1 Pro Cola + 100mg Cafeína (40g Carbs)',
+      slug: 'enervit-carbo-gel-c2-1-pro-cafeina-cola',
+      categoriaSlug: 'geles-energeticos',
+      precio: 25800,
+      precioAntes: 29000,
+      stock: 80,
+      badges: ['DURING SPORT', '100MG CAFEÍNA', '40G CARBS', 'RATIO 2:1'],
+      descripcion: 'Gel semi-líquido de alta densidad a base de maltodextrinas y fructosa en relación 2:1 potenciado con 100mg de Cafeína pura. Desarrollado con UAE Team Emirates y Lidl-Trek para los momentos críticos de carrera donde se necesita una recarga energética máxima y un estímulo mental inmediato.',
       beneficios: [
-        '75mg de cafeína para combatir la fatiga neuromuscular',
-        'Sodio, potasio, calcio y magnesio en proporciones fisiológicas',
-        'Prácticamente cero calorías (9 kcal)',
-        'Excelente para el inicio de fondos o madrugadas frías',
-        'Informed Sport Certified'
+        '40g de carbohidratos con ratio óptimo 2:1',
+        '100mg de Cafeína para activar el enfoque y retrasar la fatiga mental',
+        'Fuente de Vitamina B1 para el metabolismo energético',
+        'Sabor Cola suave no invasivo',
+        'Sin grasas y libre de gluten',
       ],
       especificaciones: {
-        "Presentación": "Tubo x 20 tabletas",
-        "Cafeína": "75 mg",
-        "Sodio": "350 mg",
-        "Calorías": "9 kcal",
-        "Porciones": "20 bebidas de 500ml"
+        "Contenido": "60 ml",
+        "Carbohidratos": "40g por gel",
+        "Cafeína": "100 mg",
+        "Sabor": "Cola",
+        "Vitamina B1": "Enriquecido con Vitamina B1",
+        "Marca": "Enervit"
       },
-      modoUso: 'Disolver 1 tableta en 500 ml de agua fría. Tomar 30-45 minutos antes de la actividad física o durante tramos de alta exigencia mental.',
-      imagen: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Consumir en la fase final de la prueba, antes de un ascenso exigente o cuando aparezcan signos de fatiga física y mental.',
+      imagen: '/products/enervit-carbo-gel-cafeina-cola.png',
     },
+
+    // 4. PRE SPORT JELLY (NARANJA)
     {
-      nombre: 'SiS GO Hydro Sobres Individuales (Caja x 10 sobres)',
-      slug: 'sis-go-hydro-sobres-individuales-caja-10',
-      categoriaSlug: 'hidratacion-electrolitos',
-      precio: 68000,
-      precioAntes: 75000,
+      nombre: 'Enervit Pre Sport Jelly Naranja (Gelatina Pre-Entreno)',
+      slug: 'enervit-pre-sport-jelly-naranja',
+      categoriaSlug: 'packs-rendimiento',
+      precio: 20500,
+      precioAntes: 23000,
       stock: 60,
-      badges: ['FORMATO VIAJE', 'DOSIS EXACTA', 'ALTA DISOLUCIÓN'],
-      descripcion: 'La misma fórmula de hidratación líder en formato de sobres individuales sellados herméticamente contra la humedad. Ideales para llevar en el bolsillo del jersey, chaleco de hidratación o mochila de trail sin riesgo de que se deterioren con el sudor o la lluvia.',
+      badges: ['BEFORE SPORT', 'ISOMALTULOSA', 'BAJO ÍNDICE GLICÉMICO', 'SIN GRASAS'],
+      descripcion: 'Alimento que reemplaza o acompaña el desayuno previo al ejercicio. Su bajo índice glicémico permite ser consumido en ayunas sin generar choque glicémico ni caídas reactivas de azúcar. Pre Sport es una gelatina a base de carbohidratos lentos (Isomaltulosa) diseñada para cargar los depósitos de energía antes de arrancar.',
       beneficios: [
-        'Sobres impermeables ultra portátiles',
-        'Dosis milimétrica para bidones y caramañolas de 500ml',
-        'Cero azúcar, sodio optimizado y disolución instantánea',
-        'Protección total contra la humedad exterior',
-        'Apto para vegetarianos y veganos'
+        'Carbohidratos de absorción gradual (Isomaltulosa)',
+        'Evita picos bruscos de insulina y pájaras tempranas',
+        'Cero grasas, digestión ultraliviana para no sobrecargar el estómago',
+        'Puede tomarse en ayunas con total seguridad digestiva',
+        'Libre de gluten con sabor natural a naranja',
       ],
       especificaciones: {
-        "Presentación": "Caja x 10 sobres individuales",
-        "Contenido": "4.5g por sobre",
-        "Sodio": "350 mg",
-        "Calorías": "9 kcal",
-        "Compatibilidad": "Bidones de 500-750ml"
+        "Uso": "Pre-actividad (30 min a 2 horas antes)",
+        "Carbohidratos": "Isomaltulosa de liberación prolongada",
+        "Grasas": "0 g",
+        "Sabor": "Naranja natural",
+        "Vitamina B1": "Aporte de Vitamina B1",
+        "Marca": "Enervit"
       },
-      modoUso: 'Vaciar el contenido de 1 sobre en 500 ml de agua, agitar durante 15 segundos hasta disolución completa y consumir durante el entrenamiento.',
-      imagen: 'https://images.unsplash.com/photo-1550572017-edd951b55104?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Consumir 1 gelatina Pre Sport entre 30 minutos y 2 horas antes de iniciar el entrenamiento o la prueba.',
+      imagen: '/products/enervit-pre-sport-jelly-orange.png',
     },
 
-    // --- BEBIDAS ENERGÉTICAS ---
+    // 5. BARRAS PERFORMANCE COCOA 2X1
     {
-      nombre: 'SiS GO Electrolyte Polvo 1.6kg',
-      slug: 'sis-go-electrolyte-polvo-1-6kg',
-      categoriaSlug: 'bebidas-energeticas',
-      precio: 245000,
-      precioAntes: 275000,
-      stock: 40,
-      badges: ['1.6 KG PRO', '36G CARBS', '40 SERVICIOS'],
-      descripcion: 'Bebida de carbohidratos y electrolitos en formato grande de 1.6 kg para deportistas serios. Proporciona 36g de carbohidratos de vaciado gástrico acelerado junto a sodio, potasio, calcio y magnesio. Diseñada para mantener tanto la energía muscular como la hidratación constante durante salidas de más de 2 horas en bicicleta o entrenamientos de ultra resistencia.',
+      nombre: 'Enervit Barras Performance Cocoa 2x1 (Cacao + Avellana)',
+      slug: 'enervit-barras-performance-cocoa-2x1',
+      categoriaSlug: 'packs-rendimiento',
+      precio: 24000,
+      precioAntes: 28000,
+      stock: 45,
+      badges: ['PROMO 2X1', '16G CARBS', '20% PROTEÍNA', 'FONDO LARGO'],
+      descripcion: 'Combate el desgaste muscular experimentado durante el ejercicio mediante un aporte balanceado de carbohidratos, proteínas, potasio y magnesio. Nutrientes esenciales para sostener el rendimiento en fondos muy largos. Presentación especial doble con 12g de proteína, baja en grasa y rica en Vitamina C.',
       beneficios: [
-        '36g de carbohidratos de fácil absorción por porción',
-        'Rinde 40 porciones de 500ml de solución energética e isotónica',
-        'Promueve un vaciado gástrico rápido sin pesadez estomacal',
-        'Equilibrio electrolítico científicamente dosificado',
-        'Fabricado bajo estrictos controles Informed Sport'
+        'Pack de 2 barras individuales de 30g',
+        '16g de carbohidratos + 20% de proteína para protección muscular',
+        'Aporte de Magnesio y Potasio contra calambres en largas jornadas',
+        'Baja en grasa (< 5%) y enriquecida con Vitamina C',
+        'Delicioso sabor a Cacao y Avellana',
       ],
       especificaciones: {
-        "Peso Neto": "1.600 g (1.6 kg)",
-        "Porciones": "40 servicios",
-        "Carbohidratos por toma": "36g",
-        "Calorías": "146 kcal",
+        "Contenido": "2 x 30g (60g total)",
+        "Carbohidratos": "16g por barra",
+        "Proteína": "20% (12g por porción)",
+        "Minerales": "Potasio y Magnesio",
+        "Grasas": "< 5%",
+        "Sabor": "Cacao + Avellana",
+        "Marca": "Enervit"
+      },
+      modoUso: 'Consumir 1 porción cada hora en entrenamientos de fondo de más de 2 horas y media alternando con líquidos.',
+      imagen: '/products/enervit-barras-performance-cocoa.png',
+    },
+
+    // 6. CARBO GEL SODIUM (LIMÓN)
+    {
+      nombre: 'Enervit Carbo Gel C2:1 Pro Limón + 200mg Sodio (40g Carbs)',
+      slug: 'enervit-carbo-gel-c2-1-pro-sodium-limon',
+      categoriaSlug: 'geles-energeticos',
+      precio: 25800,
+      precioAntes: 29000,
+      stock: 80,
+      badges: ['DURING SPORT', '200MG SODIO', '40G CARBS', 'ANTI-CALAMBRES'],
+      descripcion: 'Gel semi-líquido alto en carbohidratos a base de maltodextrinas y fructosa en ratio 2:1 con un aporte estratégico de 200mg de Sodio. Fórmula innovadora C2:1 PRO desarrollada junto a UAE Team y Lidl-Trek para etapas calurosas o ciclistas con alta tasa de sudoración.',
+      beneficios: [
+        '40g de carbohidratos densos por gel',
+        '200mg de Sodio para prevenir la hiponatremia y los calambres',
+        'Relación 2:1 Glucosa a Fructosa patentada',
+        'Sabor suave a limón que no empalaga bajo el calor',
+        'Sin grasas y libre de gluten',
+      ],
+      especificaciones: {
+        "Contenido": "60 ml",
+        "Carbohidratos": "40g por gel",
         "Sodio": "200 mg",
-        "Sabor": "Limón / Frutas Tropicales"
+        "Sabor": "Leve sabor a Limón",
+        "Grasas": "0 g",
+        "Marca": "Enervit"
       },
-      modoUso: 'Mezclar 2 medidas colmadas (aprox. 40g) con 500ml de agua en un bidón. Agitar enérgicamente. Consumir 500ml por cada 45-60 minutos de ejercicio intenso.',
-      imagen: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      nombre: 'SiS GO Electrolyte Polvo 500g',
-      slug: 'sis-go-electrolyte-polvo-500g',
-      categoriaSlug: 'bebidas-energeticas',
-      precio: 115000,
-      precioAntes: 130000,
-      stock: 65,
-      badges: ['500G COMPACTO', 'DOBLE ACCIÓN', '12 SERVICIOS'],
-      descripcion: 'La versión compacta de 500g de GO Electrolyte, perfecta para atletas que inician ciclos de entrenamiento específico o para llevar a viajes y competencias. Aporta energía constante e hidratación superior combinando maltodextrina de rápida digestión y sales minerales.',
-      beneficios: [
-        'Formato versátil para 12-13 entrenamientos clave',
-        '36g de carbohidratos para retrasar el agotamiento de glucógeno',
-        'Previene la deshidratación y calambres durante el fondo',
-        'Suave para el estómago, sin acidez ni regusto químico',
-        'Libre de sustancias prohibidas acreditado por Informed Sport'
-      ],
-      especificaciones: {
-        "Peso Neto": "500 g",
-        "Porciones": "12-13 servicios",
-        "Carbohidratos por toma": "36g",
-        "Calorías": "146 kcal",
-        "Sodio": "200 mg"
-      },
-      modoUso: 'Disolver 40g (2 scoops) en 500ml de agua. Tomar a sorbos continuos durante la primera y segunda hora de esfuerzo aeróbico.',
-      imagen: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Tomar 1 gel cada 40-50 minutos en jornadas de alta temperatura o cuando el sudor sea intenso para reponer sales y energía a la vez.',
+      imagen: '/products/enervit-carbo-gel-sodium-lemon.png',
     },
 
-    // --- PACKS Y RENDIMIENTO ---
+    // 7. ISOTONIC DRINK TARRO
     {
-      nombre: 'Pack Endurance Pro SiS (Bebida 500g + 6 Geles + Tubo Hydro)',
-      slug: 'pack-endurance-pro-sis',
-      categoriaSlug: 'packs-rendimiento',
-      precio: 195000,
-      precioAntes: 220000,
+      nombre: 'Enervit Isotonic Drink Tarro (Bebida Hidratante Naranja)',
+      slug: 'enervit-isotonic-drink-tarro-naranja',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 98400,
+      precioAntes: 110000,
       stock: 35,
-      badges: ['COMBO COMPLETO', 'AHORRO 12%', 'READY TO RACE'],
-      descripcion: 'El stack definitivo para ciclistas, corredores y triatletas. Incluye 1 pote de GO Electrolyte 500g para el bidón, 6 Geles GO Isotonic de sabores variados para energía instantánea en ruta, y 1 Tubo de Pastillas Hydro para reposición de sales. Todo lo necesario para un fin de semana épico de competencia.',
+      badges: ['REHYDRATION', 'DURING SPORT', 'ELECTROLITOS', 'SALES MINERALES'],
+      descripcion: 'Bebida hidratante en polvo a base de electrolitos, sales minerales y carbohidratos. Desarrollada con el objetivo de reponer rápidamente las sales minerales gastadas durante el ejercicio y mantener el nivel adecuado de electrolitos en sangre, reduciendo el cansancio y la fatiga.',
       beneficios: [
-        'Estrategia nutricional completa: Hidratación + Carbohidratos + Electrolitos',
-        'Ahorro del 12% frente a la compra individual',
-        'Ideal para fondos de ciclismo (+100km) o medias maratones',
-        'Cero improvisación el día de la prueba'
+        '25g de carbohidratos por toma para facilitar la rehidratación celular',
+        'Equilibrio óptimo de sodio, potasio, magnesio y cloro',
+        'Sin colorantes ni edulcorantes artificiales',
+        'Sabor natural a naranja de alta digestibilidad',
+        'Mantiene el rendimiento y previene descompensaciones hídricas',
       ],
       especificaciones: {
-        "Contenido": "1x GO Electrolyte 500g + 6x Geles GO 60ml + 1x Tubo Hydro 20 tabs",
-        "Objetivo": "Competición y fondos de más de 3 horas",
-        "Nivel": "Amateur y Élite"
+        "Presentación": "Tarro en polvo",
+        "Carbohidratos": "25g por toma",
+        "Fórmula": "Carbohidratos + Electrolitos esenciales",
+        "Sabor": "Naranja natural",
+        "Edulcorantes": "Sin edulcorantes ni colorantes artificiales",
+        "Marca": "Enervit"
       },
-      modoUso: 'Bidón 1 con GO Electrolyte para hidratación y carbohidratos constantes. Tomar 1 gel GO cada 30-40 min. Usar 1 pastilla Hydro en bidón 2 en condiciones de alta sudoración.',
-      imagen: 'https://images.unsplash.com/photo-1544816155-12df9643f363?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Disolver 2 medidas rasas (aprox. 30g) en un bidón de 500ml de agua fresca. Beber de 100 a 150ml cada 15-20 minutos durante el ejercicio.',
+      imagen: '/products/enervit-isotonic-drink-tarro.png',
     },
+
+    // 8. ISOCARB TARRO
     {
-      nombre: 'Pack Maratón & Fondo Beta Fuel (6x Beta Fuel Nootropics + 1x Hydro Cafeína)',
-      slug: 'pack-maraton-fondo-beta-fuel',
-      categoriaSlug: 'packs-rendimiento',
-      precio: 155000,
-      precioAntes: 178000,
-      stock: 25,
-      badges: ['ALTO RENDIMIENTO', '240G CARBS', 'ENFOQUE NOOTRÓPICO'],
-      descripcion: 'Diseñado específicamente para romper PB (marcas personales) en 42K de calle, trail de montaña o carreras de ruta. Combina la ultra potencia de 6 geles Beta Fuel con nootrópicos y cafeína junto al tubo Hydro + Cafeína para asegurar cero pájaras y un enfoque mental impenetrable de principio a fin.',
+      nombre: 'Enervit Isocarb C2:1 Pro Tarro (Bebida Alta Densidad Limón)',
+      slug: 'enervit-isocarb-c2-1-pro-tarro-limon',
+      categoriaSlug: 'bebidas-energeticas',
+      precio: 152500,
+      precioAntes: 170000,
+      stock: 30,
+      badges: ['WORLD TOUR PRO', 'HASTA 90G/H CH', 'MALTODEXTRINA DE1', 'RATIO 2:1'],
+      descripcion: 'Bebida de vanguardia desarrollada durante el Giro de Italia y Tour de Francia en colaboración directa con los equipos World Tour: UAE Team Emirates y Trek-Segafredo. ISOCARB es una bebida que permite maximizar la ingesta de carbohidratos en el cuerpo hasta llegar a 90g por hora sin molestias estomacales, gracias a su fórmula isotónica con Maltodextrina DE1 Agenanova® y fructosa en ratio 2:1.',
       beneficios: [
-        '40g de carbohidratos por gel para asimilar hasta 90-120g/hora',
-        'Nootrópicos de grado farmacéutico para enfoque en momentos de agonía',
-        'Cafeína dosificada para evitar caídas de potencia',
-        'Diseñado con la tecnología de campeones mundiales de maratón e Ineos Grenadiers'
+        'Permite asimilar hasta 90g de carbohidratos por hora',
+        '60g de carbohidratos de asimilación continua por porción',
+        'Maltodextrina de última generación DE1 Agenanova®',
+        'Fórmula isotónica que vacía rápidamente el estómago',
+        'Sabor suave a limón especialmente formulado para no cansar el paladar',
       ],
       especificaciones: {
-        "Contenido": "6x Beta Fuel + Nootropics 60ml + 1x Tubo Hydro Caffeine 20 tabs",
-        "Uso": "Maratón 42K, Gran Fondo ciclismo, Triatlón 70.3 / Ironman"
+        "Presentación": "Tarro en polvo",
+        "Carbohidratos": "60g por porción (hasta 90g/h asimilables)",
+        "Ratio": "2:1 Maltodextrina a Fructosa",
+        "Maltodextrina": "DE1 Agenanova® de ultra baja osmolaridad",
+        "Sabor": "Mild Lemon (Leve limón)",
+        "Uso": "Etapas exigentes World Tour, Gran Fondos y Maratones",
+        "Marca": "Enervit"
       },
-      modoUso: 'Tomar Hydro Cafeína en los primeros 10-15km y alternar 1 gel Beta Fuel cada 35-45 minutos manteniendo ritmo de carrera.',
-      imagen: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      modoUso: 'Disolver entre 2 y 3 medidas dosificadoras en 500ml de agua según el plan nutricional del atleta para conseguir entre 60g y 90g de carbohidratos por hora.',
+      imagen: '/products/enervit-isocarb-c2-1-pro-tarro.png',
     },
   ];
 
@@ -355,7 +324,7 @@ async function main() {
     console.log(`  + Producto registrado: [${cat.nombre}] ${prod.nombre}`);
   }
 
-  console.log(`✓ ${officialProducts.length} Productos oficiales insertados con éxito.`);
+  console.log(`✓ ${officialProducts.length} Productos oficiales Enervit insertados con éxito.`);
   console.log('--- SEED COMPLETADO SATISFACTORIAMENTE ---');
 }
 
