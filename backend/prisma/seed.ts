@@ -5,7 +5,7 @@ import slugify from 'slugify';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('--- INICIANDO SEED OFICIAL ENERVIT (VICTORIA SPORTS NUTRITION) ---');
+  console.log('--- INICIANDO SEED OFICIAL VICTORIA SPORTS NUTRITION (ENERVIT + SIS) ---');
 
   // 1. Limpieza de pedidos y productos de prueba anteriores
   await prisma.detallePedido.deleteMany({});
@@ -25,9 +25,6 @@ async function main() {
   if (existingAdmin) {
     console.log(`✓ Administrador ya existente detectado (${existingAdmin.email}). No se sobreescribe su contraseña.`);
   } else {
-    if (!initialAdminPassword || initialAdminPassword.trim().length < 14) {
-      console.log('Aviso: INITIAL_ADMIN_PASSWORD no definida o corta. Creando admin por defecto si es necesario.');
-    }
     const defaultPassword = initialAdminPassword?.trim() || 'VictoriaAdmin2026!Pasto#Secure';
     const hashedPassword = await bcrypt.hash(defaultPassword, 12);
     const newAdmin = await prisma.usuario.create({
@@ -41,11 +38,12 @@ async function main() {
     console.log(`✓ Administrador inicial creado exitosamente: ${newAdmin.email}`);
   }
 
-  // 3. Crear las 4 Categorías Oficiales
+  // 3. Crear las 5 Categorías Oficiales
   const officialCategories = [
     { nombre: 'Geles Energéticos', slug: 'geles-energeticos' },
     { nombre: 'Hidratación y Electrolitos', slug: 'hidratacion-electrolitos' },
     { nombre: 'Bebidas Energéticas', slug: 'bebidas-energeticas' },
+    { nombre: 'Recuperación y Proteínas', slug: 'recuperacion-proteinas' },
     { nombre: 'Packs y Rendimiento', slug: 'packs-rendimiento' },
   ];
 
@@ -60,15 +58,16 @@ async function main() {
     });
     createdCategories[cat.slug] = createdCat;
   }
-  console.log(`✓ 4 Categorías oficiales creadas:`, Object.keys(createdCategories).join(', '));
+  console.log(`✓ 5 Categorías oficiales creadas:`, Object.keys(createdCategories).join(', '));
 
-  // 4. Catálogo Oficial Enervit C2:1 Pro (UAE Team, Lidl-Trek, FCI)
+  // 4. Catálogo Oficial Completo (12 Productos: Enervit + SiS)
   const officialProducts = [
+    // ================= ENERVIT =================
     // 1. MAGIC CHERRY
     {
       nombre: 'Enervit Magic Cherry (Extracto de Cereza After Sport)',
       slug: 'enervit-magic-cherry',
-      categoriaSlug: 'bebidas-energeticas',
+      categoriaSlug: 'recuperacion-proteinas',
       precio: 27500,
       precioAntes: 31000,
       stock: 50,
@@ -298,6 +297,129 @@ async function main() {
       modoUso: 'Disolver entre 2 y 3 medidas dosificadoras en 500ml de agua según el plan nutricional del atleta para conseguir entre 60g y 90g de carbohidratos por hora.',
       imagen: '/products/enervit-isocarb-c2-1-pro-tarro.png',
     },
+
+    // ================= SCIENCE IN SPORT (SiS) =================
+    // 9. REGO RAPID RECOVERY X 1.6KG
+    {
+      nombre: 'SiS REGO Rapid Recovery 1.6kg (Strawberry / Fresa)',
+      slug: 'sis-rego-rapid-recovery-1-6kg',
+      categoriaSlug: 'recuperacion-proteinas',
+      precio: 280000,
+      precioAntes: 310000,
+      stock: 25,
+      badges: ['RECOVERY', 'VEGANO', '21G PROTEÍNA', '2.5G LEUCINA'],
+      descripcion: 'REGO Rapid Recovery es una bebida de recuperación apta para veganos, diseñada para recargar energías, reconstruir los músculos y reducir la fatiga tras el entrenamiento. Su fórmula combina carbohidratos, proteínas de soja, aminoácidos esenciales, vitaminas y minerales para una recuperación más rápida y efectiva.',
+      beneficios: [
+        '22g de carbohidratos (maltodextrina) para reponer energía y glucógeno muscular',
+        '21g de proteína de soja para desarrollar y mantener la masa muscular',
+        '2.5g de L-leucina, aminoácido clave para estimular la síntesis de proteínas',
+        'Vitaminas C y B6 que ayudan al sistema inmunológico y reducen el cansancio',
+        'Apto para veganos e intolerantes a la lactosa',
+        'Ideal para entrenamientos de resistencia y alta intensidad'
+      ],
+      especificaciones: {
+        "Presentación": "Bolsa 1.6 kg / 1.5 kg (30 tomas)",
+        "Carbohidratos": "22g por porción de 50g",
+        "Proteína": "21g por porción",
+        "L-Leucina": "2.5 g",
+        "Vitaminas": "Vitamina C y Complejo B (B6)",
+        "Sabor": "Fresa (Strawberry)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Mezcla 50g (2 dosificadores) en 500ml de agua fría. Consumir dentro de los 30 minutos posteriores al ejercicio para una recuperación óptima.',
+      imagen: '/products/sis-rego-rapid-recovery-1-6kg.png',
+    },
+
+    // 10. REGO RECOVERY X 500GR
+    {
+      nombre: 'SiS REGO Rapid Recovery 500g (Strawberry / Fresa)',
+      slug: 'sis-rego-rapid-recovery-500g',
+      categoriaSlug: 'recuperacion-proteinas',
+      precio: 110000,
+      precioAntes: 125000,
+      stock: 35,
+      badges: ['RECOVERY', 'VEGANO', '21G PROTEÍNA', 'FORMATO 500G'],
+      descripcion: 'Bolsa de 500g de REGO Rapid Recovery. Bebida de recuperación completa apta para veganos, diseñada para recargar energías, reconstruir los músculos y reducir la fatiga tras el entrenamiento. Fórmula que combina carbohidratos, proteínas de soja, aminoácidos esenciales, vitaminas y minerales.',
+      beneficios: [
+        'Formato práctico de 500g (10 tomas completas)',
+        '22g de carbohidratos (maltodextrina) para recarga de glucógeno',
+        '21g de proteína de soja para reparar fibras musculares',
+        '2.5g de L-leucina para estimular la síntesis proteica',
+        'Vitaminas C y B6 contra la fatiga extrema',
+        'Apto para veganos y 100% libre de lactosa'
+      ],
+      especificaciones: {
+        "Presentación": "Bolsa 500g (10 porciones)",
+        "Carbohidratos": "22g por porción",
+        "Proteína": "21g por porción",
+        "L-Leucina": "2.5 g",
+        "Sabor": "Fresa (Strawberry)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Mezcla 50g (2 dosificadores) en 500ml de agua fría dentro de los 30 minutos posteriores al ejercicio.',
+      imagen: '/products/sis-rego-rapid-recovery-500g.jpeg',
+    },
+
+    // 11. SIS BETA RECOVERY X 1.6KG
+    {
+      nombre: 'SiS BETA Recovery 1.6kg (Dual Source / Chocolate)',
+      slug: 'sis-beta-recovery-1-6kg',
+      categoriaSlug: 'recuperacion-proteinas',
+      precio: 319900,
+      precioAntes: 350000,
+      stock: 20,
+      badges: ['DUAL SOURCE 1:1', '60G CARBS', '30G WHEY', 'PROBIÓTICO BC30'],
+      descripcion: 'BETA Recovery es una bebida de recuperación científicamente formulada con carbohidratos de doble fuente y proteína de suero, ideal para atletas que realizan entrenamientos o competencias de alta intensidad y duración superior a 90 minutos. Ayuda a recargar rápidamente las reservas de glucógeno en músculos e hígado, a la vez que repara y reconstruye el tejido muscular.',
+      beneficios: [
+        'Aporta 60g de carbohidratos en proporción 1:1 (maltodextrina y fructosa) para reponer energía en hígado y músculo',
+        'Contiene 30g de proteína de suero con 3g de leucina por porción para estimular la síntesis de proteínas musculares',
+        'Incluye BC30™ (Bacillus coagulans), un probiótico que mejora la digestión, absorción de proteínas y la salud inmunológica',
+        'Favorece la recuperación muscular completa y la adaptación al entrenamiento',
+        'Probado y certificado por Informed Sport para atletas de alto rendimiento'
+      ],
+      especificaciones: {
+        "Presentación": "Bolsa 1.6 kg / 1.5 kg (15 tomas de 100g)",
+        "Carbohidratos": "60g en ratio dual 1:1",
+        "Proteína": "30g Proteína de Suero (Whey)",
+        "Leucina": "3 g",
+        "Probiótico": "BC30™ (Bacillus coagulans)",
+        "Sabor": "Chocolate",
+        "Uso": "Sesiones extenuantes de más de 90 minutos",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver 100g (3 medidas) en 500ml de agua fría y agitar bien. Tomar dentro de los primeros 30 minutos tras finalizar la actividad.',
+      imagen: '/products/sis-beta-recovery-1-6kg.jpeg',
+    },
+
+    // 12. REGO WHEY PROTEIN X 1.6KG
+    {
+      nombre: 'SiS REGO Whey Protein 1.6kg (Premium Whey / Fresa)',
+      slug: 'sis-rego-whey-protein-1-6kg',
+      categoriaSlug: 'recuperacion-proteinas',
+      precio: 320000,
+      precioAntes: 355000,
+      stock: 20,
+      badges: ['WHEY PREMIUM', '22G PROTEÍNA', '9 EAA + BCAA', 'LOW SUGAR'],
+      descripcion: 'REGO Whey Protein de Science in Sport es una proteína premium diseñada para apoyar la recuperación muscular y el mantenimiento de la masa muscular después de entrenamientos cortos o de alta intensidad. Su fórmula está pensada para deportistas que no requieren una alta carga de carbohidratos, pero sí una proteína de alta calidad para optimizar la recuperación.',
+      beneficios: [
+        '22g de proteína whey por porción para recuperación muscular',
+        'Perfil completo con 9 aminoácidos esenciales + BCAA',
+        'Favorece la síntesis de proteína muscular (MPS)',
+        'Ideal para sesiones cortas o menos demandantes',
+        'Rápida absorción que mejora la recuperación post-entrenamiento',
+        'Fácil de preparar y consumir en cualquier momento'
+      ],
+      especificaciones: {
+        "Presentación": "Bolsa 1.6 kg / 1.35 kg (45 tomas)",
+        "Proteína": "22g por porción",
+        "Aminoácidos": "9 esenciales + BCAA (2.8g Leucina)",
+        "Azúcar": "Bajo en azúcar (Low Sugar)",
+        "Sabor": "Fresa (Strawberry)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Mezclar 30g (1 dosificador) en 300ml de agua o leche descremada después de entrenar o como complemento proteico entre comidas.',
+      imagen: '/products/sis-rego-whey-protein-1-6kg.jpeg',
+    },
   ];
 
   for (const prod of officialProducts) {
@@ -324,7 +446,7 @@ async function main() {
     console.log(`  + Producto registrado: [${cat.nombre}] ${prod.nombre}`);
   }
 
-  console.log(`✓ ${officialProducts.length} Productos oficiales Enervit insertados con éxito.`);
+  console.log(`✓ ${officialProducts.length} Productos oficiales insertados con éxito.`);
   console.log('--- SEED COMPLETADO SATISFACTORIAMENTE ---');
 }
 
