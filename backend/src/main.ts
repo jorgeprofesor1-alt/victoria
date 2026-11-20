@@ -76,8 +76,12 @@ async function bootstrap() {
   // Los comprobantes de pago están en una carpeta privada y NO se sirven como activos estáticos
   const baseUploadDir = process.env.UPLOAD_DIR || 'uploads';
   const productsUploadDir = join(process.cwd(), baseUploadDir, 'products');
-  if (!fs.existsSync(productsUploadDir)) {
-    fs.mkdirSync(productsUploadDir, { recursive: true });
+  try {
+    if (!fs.existsSync(productsUploadDir)) {
+      fs.mkdirSync(productsUploadDir, { recursive: true });
+    }
+  } catch (err: any) {
+    console.warn(`Aviso: No se pudo crear ${productsUploadDir} al arranque (${err.message}). Continuando...`);
   }
   app.useStaticAssets(productsUploadDir, {
     prefix: '/uploads/products/',

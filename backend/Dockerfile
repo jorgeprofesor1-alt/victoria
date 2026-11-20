@@ -54,8 +54,8 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # En Debian node:20-slim el usuario 'node' (uid: 1000) ya existe con su /home/node
-# Crear directorio de subida de archivos y asignar permisos
-RUN mkdir -p /app/uploads && chown -R node:node /app
+# Crear directorios de subida y asignar permisos antes de montar volumen
+RUN mkdir -p /app/uploads/products /app/uploads/receipts && chown -R node:node /app
 
 # Copiar script de inicialización y dar permisos
 COPY --chown=node:node docker-entrypoint.sh ./
