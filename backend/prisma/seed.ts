@@ -5,7 +5,7 @@ import slugify from 'slugify';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('--- INICIANDO SEED OFICIAL VICTORIA SPORTS NUTRITION (ENERVIT + SIS) ---');
+  console.log('--- INICIANDO SEED OFICIAL VICTORIA SPORTS NUTRITION (CATÁLOGO COMPLETO) ---');
 
   // 1. Limpieza de pedidos y productos de prueba anteriores
   await prisma.detallePedido.deleteMany({});
@@ -60,10 +60,11 @@ async function main() {
   }
   console.log(`✓ 5 Categorías oficiales creadas:`, Object.keys(createdCategories).join(', '));
 
-  // 4. Catálogo Oficial Completo (12 Productos: Enervit + SiS)
+  // 4. Catálogo Oficial Completo (20 Productos: Enervit + SiS)
   const officialProducts = [
-    // ================= ENERVIT =================
-    // 1. MAGIC CHERRY
+    // ==========================================
+    // 1. GAMA ENERVIT (C2:1 PRO)
+    // ==========================================
     {
       nombre: 'Enervit Magic Cherry (Extracto de Cereza After Sport)',
       slug: 'enervit-magic-cherry',
@@ -91,8 +92,6 @@ async function main() {
       modoUso: 'Disolver el contenido de 1 sobre en un vaso de agua fresca inmediatamente después de terminar entrenamientos de fondo o competencias.',
       imagen: '/products/enervit-magic-cherry.png',
     },
-
-    // 2. CARBO GEL 40GR CARBOS (MANGO)
     {
       nombre: 'Enervit Carbo Gel C2:1 Pro Mango 60ml (40g Carbs)',
       slug: 'enervit-carbo-gel-c2-1-pro-mango-40g',
@@ -101,7 +100,7 @@ async function main() {
       precioAntes: 27000,
       stock: 80,
       badges: ['DURING SPORT', '40G CARBS', 'RATIO 2:1', 'SIN GLUTEN'],
-      descripcion: 'Gel semi-líquido alto en carbohidratos a base de diferentes maltodextrinas y fructosa en relación 2:1. C2:1 PRO es la fórmula innovadora desarrollada directamente con los equipos World Tour: UAE Team Emirates, Lidl-Trek y la FCI. Fórmula altamente densa en carbohidratos (patente pendiente) con leve y agradable sabor a mango.',
+      descripcion: 'Gel semi-líquido alto en carbohidratos a base de diferentes maltodextrinas y fructosa en relación 2:1. C2:1 PRO es la fórmula innovadora desarrollada directamente con los equipos World Tour: UAE Team Emirates, Lidl-Trek y la FCI. Fórmula altamente densa en carbohidratos con leve y agradable sabor a mango.',
       beneficios: [
         '40g de carbohidratos densos por gel',
         'Relación Glucosa-Fructosa 2:1 para máxima velocidad de absorción',
@@ -121,8 +120,6 @@ async function main() {
       modoUso: 'Tomar 1 o 2 geles por hora durante la actividad deportiva de resistencia según el requerimiento de carbohidratos.',
       imagen: '/products/enervit-carbo-gel-mango.png',
     },
-
-    // 3. CARBO GEL CAFEINA (COLA)
     {
       nombre: 'Enervit Carbo Gel C2:1 Pro Cola + 100mg Cafeína (40g Carbs)',
       slug: 'enervit-carbo-gel-c2-1-pro-cafeina-cola',
@@ -150,8 +147,6 @@ async function main() {
       modoUso: 'Consumir en la fase final de la prueba, antes de un ascenso exigente o cuando aparezcan signos de fatiga física y mental.',
       imagen: '/products/enervit-carbo-gel-cafeina-cola.png',
     },
-
-    // 4. PRE SPORT JELLY (NARANJA)
     {
       nombre: 'Enervit Pre Sport Jelly Naranja (Gelatina Pre-Entreno)',
       slug: 'enervit-pre-sport-jelly-naranja',
@@ -179,8 +174,6 @@ async function main() {
       modoUso: 'Consumir 1 gelatina Pre Sport entre 30 minutos y 2 horas antes de iniciar el entrenamiento o la prueba.',
       imagen: '/products/enervit-pre-sport-jelly-orange.png',
     },
-
-    // 5. BARRAS PERFORMANCE COCOA 2X1
     {
       nombre: 'Enervit Barras Performance Cocoa 2x1 (Cacao + Avellana)',
       slug: 'enervit-barras-performance-cocoa-2x1',
@@ -209,8 +202,6 @@ async function main() {
       modoUso: 'Consumir 1 porción cada hora en entrenamientos de fondo de más de 2 horas y media alternando con líquidos.',
       imagen: '/products/enervit-barras-performance-cocoa.png',
     },
-
-    // 6. CARBO GEL SODIUM (LIMÓN)
     {
       nombre: 'Enervit Carbo Gel C2:1 Pro Limón + 200mg Sodio (40g Carbs)',
       slug: 'enervit-carbo-gel-c2-1-pro-sodium-limon',
@@ -238,8 +229,6 @@ async function main() {
       modoUso: 'Tomar 1 gel cada 40-50 minutos en jornadas de alta temperatura o cuando el sudor sea intenso para reponer sales y energía a la vez.',
       imagen: '/products/enervit-carbo-gel-sodium-lemon.png',
     },
-
-    // 7. ISOTONIC DRINK TARRO
     {
       nombre: 'Enervit Isotonic Drink Tarro (Bebida Hidratante Naranja)',
       slug: 'enervit-isotonic-drink-tarro-naranja',
@@ -267,8 +256,6 @@ async function main() {
       modoUso: 'Disolver 2 medidas rasas (aprox. 30g) en un bidón de 500ml de agua fresca. Beber de 100 a 150ml cada 15-20 minutos durante el ejercicio.',
       imagen: '/products/enervit-isotonic-drink-tarro.png',
     },
-
-    // 8. ISOCARB TARRO
     {
       nombre: 'Enervit Isocarb C2:1 Pro Tarro (Bebida Alta Densidad Limón)',
       slug: 'enervit-isocarb-c2-1-pro-tarro-limon',
@@ -298,8 +285,9 @@ async function main() {
       imagen: '/products/enervit-isocarb-c2-1-pro-tarro.png',
     },
 
-    // ================= SCIENCE IN SPORT (SiS) =================
-    // 9. REGO RAPID RECOVERY X 1.6KG
+    // ==========================================
+    // 2. GAMA SCIENCE IN SPORT (SiS) - RECUPERACIÓN Y PROTEÍNAS
+    // ==========================================
     {
       nombre: 'SiS REGO Rapid Recovery 1.6kg (Strawberry / Fresa)',
       slug: 'sis-rego-rapid-recovery-1-6kg',
@@ -329,8 +317,6 @@ async function main() {
       modoUso: 'Mezcla 50g (2 dosificadores) en 500ml de agua fría. Consumir dentro de los 30 minutos posteriores al ejercicio para una recuperación óptima.',
       imagen: '/products/sis-rego-rapid-recovery-1-6kg.png',
     },
-
-    // 10. REGO RECOVERY X 500GR
     {
       nombre: 'SiS REGO Rapid Recovery 500g (Strawberry / Fresa)',
       slug: 'sis-rego-rapid-recovery-500g',
@@ -359,8 +345,6 @@ async function main() {
       modoUso: 'Mezcla 50g (2 dosificadores) en 500ml de agua fría dentro de los 30 minutos posteriores al ejercicio.',
       imagen: '/products/sis-rego-rapid-recovery-500g.jpeg',
     },
-
-    // 11. SIS BETA RECOVERY X 1.6KG
     {
       nombre: 'SiS BETA Recovery 1.6kg (Dual Source / Chocolate)',
       slug: 'sis-beta-recovery-1-6kg',
@@ -390,8 +374,6 @@ async function main() {
       modoUso: 'Disolver 100g (3 medidas) en 500ml de agua fría y agitar bien. Tomar dentro de los primeros 30 minutos tras finalizar la actividad.',
       imagen: '/products/sis-beta-recovery-1-6kg.jpeg',
     },
-
-    // 12. REGO WHEY PROTEIN X 1.6KG
     {
       nombre: 'SiS REGO Whey Protein 1.6kg (Premium Whey / Fresa)',
       slug: 'sis-rego-whey-protein-1-6kg',
@@ -419,6 +401,227 @@ async function main() {
       },
       modoUso: 'Mezclar 30g (1 dosificador) en 300ml de agua o leche descremada después de entrenar o como complemento proteico entre comidas.',
       imagen: '/products/sis-rego-whey-protein-1-6kg.jpeg',
+    },
+
+    // ==========================================
+    // 3. GAMA SCIENCE IN SPORT (SiS) - HIDRATACIÓN Y GELES
+    // ==========================================
+    {
+      nombre: 'SiS GO Electrolyte Polvo 1.6 Kg (Orange / Naranja)',
+      slug: 'sis-go-electrolyte-1-6kg',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 220000,
+      precioAntes: 245000,
+      stock: 25,
+      badges: ['ISOTÓNICO', '36G CARBS', 'SODIO 20MMOL', 'INFORMED SPORT'],
+      descripcion: 'SiS GO Electrolyte es una bebida deportiva en polvo que combina carbohidratos de rápida absorción y electrolitos esenciales, como el sodio, para ayudarte a mantener un rendimiento óptimo durante entrenamientos o competencias de resistencia. Diseñada para reponer la energía, mejorar la hidratación y prevenir los calambres.',
+      beneficios: [
+        'Aporta 36g de carbohidratos por porción (500ml) para mantener tus niveles de energía',
+        'Rico en sodio (20 mmol/L) para una hidratación celular ultra eficiente',
+        '146 calorías por porción, ideal para esfuerzos prolongados',
+        'Rápida absorción de energía y fluidos sin causar molestias digestivas',
+        'Apto para dietas veganas y con certificación Informed Sport'
+      ],
+      especificaciones: {
+        "Presentación": "Tarro 1.6 kg (40 porciones)",
+        "Carbohidratos": "36g por porción de 40g",
+        "Fuente energética": "Maltodextrina de alta biodisponibilidad",
+        "Electrolito principal": "Sodio (20 mmol/L)",
+        "Tipo de bebida": "Isotónica",
+        "Sabor": "Orange (Naranja)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver 40g (aprox. 3 cucharadas) en 500ml - 750ml de agua. Tomar durante el ejercicio a sorbos regulares cada 15-20 minutos.',
+      imagen: '/products/sis-go-electrolyte-1-6kg.jpeg',
+    },
+    {
+      nombre: 'SiS GO Electrolyte Polvo 500g (Orange / Naranja)',
+      slug: 'sis-go-electrolyte-500g',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 70000,
+      precioAntes: 80000,
+      stock: 40,
+      badges: ['ISOTÓNICO', '36G CARBS', 'FORMATO 500G', 'INFORMED SPORT'],
+      descripcion: 'Presentación de 500g de SiS GO Electrolyte. Bebida deportiva en polvo que combina carbohidratos de rápida asimilación con electrolitos esenciales para evitar la deshidratación y retrasar la fatiga en carreras y salidas de fin de semana.',
+      beneficios: [
+        'Formato compacto de 500g (aprox. 12-13 bidones)',
+        '36g de carbohidratos por toma para sostener el ritmo',
+        'Concentración precisa de sodio (20 mmol/L) contra calambres',
+        'Excelente tolerancia digestiva incluso a ritmo de competición',
+        'Certificación Informed Sport'
+      ],
+      especificaciones: {
+        "Presentación": "Tarro 500g",
+        "Carbohidratos": "36g por toma",
+        "Electrolito": "Sodio (20 mmol/L)",
+        "Sabor": "Naranja (Orange)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver 40g en 500ml de agua fría y beber continuamente durante la actividad física.',
+      imagen: '/products/sis-go-electrolyte-500g.png',
+    },
+    {
+      nombre: 'SiS Hydro Pastillas Efervescentes (Pineapple & Mango - Tubo x 20 Tabs)',
+      slug: 'sis-hydro-pastillas',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 70000,
+      precioAntes: 78000,
+      stock: 50,
+      badges: ['HIPOTÓNICO', 'ZERO SUGAR', '30MMOL SODIO', '20 TABLETAS'],
+      descripcion: 'SiS Hydro es una tableta efervescente que se disuelve fácilmente en agua (500ml) y proporciona una solución rápida y práctica para hidratarse eficazmente durante el ejercicio sin aportar calorías vacías. Diseñada científicamente con electrolitos esenciales que reponen lo perdido por el sudor.',
+      beneficios: [
+        'Solo 9 calorías por porción (Zero Sugar)',
+        'Alto contenido de sodio (30 mmol/L) para evitar la hiponatremia',
+        '4 minerales clave: Sodio, potasio, magnesio y calcio',
+        'Previene calambres y deshidratación sin alterar planes calóricos',
+        'Apto para veganos, libre de gluten y certificado por Informed Sport'
+      ],
+      especificaciones: {
+        "Formato": "Tubo portátil x 20 tabletas",
+        "Calorías": "0 kcal / 9 kcal por tableta",
+        "Electrolitos": "Sodio (30 mmol/L), Potasio, Magnesio, Calcio",
+        "Sabor": "Pineapple & Mango (Piña y Mango)",
+        "Tipo de bebida": "Hipotónica",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver 1 tableta en 500ml de agua. Tomar 500ml 3-4 horas antes del ejercicio y beber a sorbos regulares durante la sesión.',
+      imagen: '/products/sis-hydro-pastillas.jpeg',
+    },
+    {
+      nombre: 'SiS Hydro + Caffeine Pastillas Efervescentes (Cola - Tubo x 20 Tabs)',
+      slug: 'sis-hydro-caffeine',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 70000,
+      precioAntes: 78000,
+      stock: 50,
+      badges: ['75MG CAFEÍNA', 'ZERO SUGAR', '4 ELECTROLITOS', '20 TABLETAS'],
+      descripcion: 'SiS Hydro + Caffeine – Cola es una bebida de hidratación en tabletas efervescentes desarrollada para aportar electrolitos clave durante el ejercicio y, al mismo tiempo, proporcionar un estímulo de 75mg de cafeína por tableta para elevar el estado de alerta y reducir la percepción del esfuerzo.',
+      beneficios: [
+        '75mg de cafeína por tableta para agudeza mental y energía',
+        '4 electrolitos principales: Sodio, calcio, magnesio y potasio (789mg totales)',
+        'Enriquecido con vitaminas del complejo B (B1, B2 y B6)',
+        'Fácil transporte y disolución instantánea en bidón',
+        'Libre de azúcar (aprox. 9 kcal) y apto para veganos'
+      ],
+      especificaciones: {
+        "Presentación": "Tubo x 20 tabletas efervescentes",
+        "Cafeína": "75 mg por tableta",
+        "Electrolitos": "Sodio, calcio, magnesio y potasio",
+        "Vitaminas": "B1, B2 y B6",
+        "Sabor": "Cola",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver 1 tableta en 500ml de agua fría. Ideal para tomar antes o durante entrenamientos y etapas donde se requiera máximo enfoque.',
+      imagen: '/products/sis-hydro-caffeine.jpeg',
+    },
+    {
+      nombre: 'SiS Hydro+ Electrolyte Drink Mix Sobres (Pack x 6)',
+      slug: 'sis-hydro-sobres-pack6',
+      categoriaSlug: 'hidratacion-electrolitos',
+      precio: 42000,
+      precioAntes: 46000,
+      stock: 40,
+      badges: ['0 KCAL', '5 ELECTROLITOS', 'VITAMINAS C Y B', 'PACK X 6'],
+      descripcion: 'Mezcla de electrolitos de hidratación avanzada en sobres individuales desarrollada por Science in Sport. Su fórmula aporta cinco electrolitos esenciales (sodio, potasio, cloruro, calcio y magnesio) junto con vitaminas C, B6 y B12 para evitar el cansancio y sostener una hidratación celular óptima.',
+      beneficios: [
+        '5 electrolitos esenciales: 350mg sodio, 300mg potasio, 750mg cloruro, 120mg calcio, 56mg magnesio',
+        '0 carbohidratos, 0 azúcares y 0 calorías',
+        'Enriquecido con Vitamina C (80mg), B6 y B12',
+        'Formato en sobre ultraligero para llevar en maillot o mochila',
+        'Sabor refrescante Berry / Naranja-Mango de disolución rápida'
+      ],
+      especificaciones: {
+        "Presentación": "Caja/Pack de 6 sobres ($7.000 c/u)",
+        "Sodio": "350 mg por porción",
+        "Potasio": "300 mg",
+        "Cloruro": "750 mg",
+        "Calorías": "0 kcal",
+        "Vitaminas": "C, B6, B12",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Disolver el contenido de 1 sobre en 500ml de agua fresca durante el entrenamiento o en el día a día para rehidratarse.',
+      imagen: '/products/sis-hydro-sobres-pack6.jpeg',
+    },
+    {
+      nombre: 'SiS GO Isotonic Energy Gel 60ml (Naranja)',
+      slug: 'sis-gel-go-isotonic',
+      categoriaSlug: 'geles-energeticos',
+      precio: 12000,
+      precioAntes: 14000,
+      stock: 120,
+      badges: ['ISOTÓNICO', '22G CARBS', 'NO NECESITA AGUA', 'FAST ENERGY'],
+      descripcion: 'El primer gel energético isotónico del mundo. Diseñado para ofrecer un impulso inmediato de energía sin necesidad de agua, reduciendo el riesgo de calambres estomacales. Su fórmula aporta 22g de carbohidratos de rápida absorción en un envase práctico y fácil de abrir sobre la marcha.',
+      beneficios: [
+        '22g de carbohidratos de asimilación ultrarrápida',
+        'Verdaderamente isotónico: no requiere tomar agua adicional',
+        'Digestión liviana y textura fluida que no empalaga',
+        'Compatible con todo tipo de deportes de resistencia (running, ciclismo, triatlón)',
+        'Certificación Informed Sport'
+      ],
+      especificaciones: {
+        "Contenido": "Sobre individual de 60 ml",
+        "Carbohidratos": "22g por gel",
+        "Tecnología": "Fórmula Isotónica limpia",
+        "Necesita agua": "No",
+        "Sabor": "Orange (Naranja)",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Consumir 1 a 3 geles por hora durante el ejercicio para alcanzar el aporte recomendado de 60g de carbohidratos.',
+      imagen: '/products/sis-gel-go-isotonic.jpeg',
+    },
+    {
+      nombre: 'SiS GO Energy + Electrolyte Gel 60ml (Caramelo Salado / Limón)',
+      slug: 'sis-gel-go-electrolyte',
+      categoriaSlug: 'geles-energeticos',
+      precio: 15000,
+      precioAntes: 17000,
+      stock: 100,
+      badges: ['ELECTROLITOS', '22G CARBS', 'ANTI-CALAMBRES', '0.3G SAL'],
+      descripcion: 'Combina 22g de carbohidratos de fácil absorción con electrolitos clave (sodio, potasio y magnesio) para reponer lo que se pierde a través del sudor en entrenamientos intensos o en días de calor, favoreciendo la hidratación y el equilibrio hídrico.',
+      beneficios: [
+        '22g de carbohidratos para energía sostenida',
+        'Electrolitos clave: 0.3g de sal, potasio y magnesio contra calambres',
+        'Fórmula isotónica de digestión rápida y efectiva',
+        'Ideal para sesiones largas, calor extremo o alta tasa de sudoración',
+        'Certificado Informed Sport'
+      ],
+      especificaciones: {
+        "Contenido": "Sobre individual de 60 ml",
+        "Carbohidratos": "22g por gel",
+        "Sal": "0.3 g",
+        "Calorías": "87 kcal",
+        "Sabor": "Salted Caramel / Lemon Mint",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Consumir 1 gel de electrolitos por hora alternando con geles isotónicos estándar en sesiones largas.',
+      imagen: '/products/sis-gel-go-electrolyte.jpeg',
+    },
+    {
+      nombre: 'SiS Beta Fuel Gel + Nootropics 60ml (Apple / Manzana)',
+      slug: 'sis-gel-beta-fuel-nootropics',
+      categoriaSlug: 'geles-energeticos',
+      precio: 20000,
+      precioAntes: 23000,
+      stock: 90,
+      badges: ['40G CARBS', 'NOOTROPICS', '200MG CITICOLINA', 'DUAL SOURCE 1:0.8'],
+      descripcion: 'El gel energético más avanzado para resistencia extrema. Combina una masiva carga de 40g de carbohidratos en relación óptima Dual Source 1:0.8 (maltodextrina a fructosa) con 200mg de Cognizin® Citicolina para potenciar simultáneamente la potencia muscular y el enfoque cognitivo cuando la fatiga es extrema.',
+      beneficios: [
+        '40g de carbohidratos en relación 1:0.8 para asimilar hasta 120g/hora',
+        '200mg de Cognizin® Citicolina para concentración y toma de decisiones rápida',
+        'Reduce la fatiga central y la percepción del esfuerzo',
+        'Textura ligera y digestibilidad probada en el World Tour',
+        'Certificación Informed Sport'
+      ],
+      especificaciones: {
+        "Contenido": "Sobre individual de 60 ml",
+        "Carbohidratos": "40g (Dual Source 1:0.8)",
+        "Nootrópico": "200 mg Cognizin® Citicolina",
+        "Sabor": "Apple / Lemon & Lime",
+        "Uso": "Etapas decisivas, maratón y triatlón de larga distancia",
+        "Marca": "SiS (Science in Sport)"
+      },
+      modoUso: 'Consumir máximo 1 gel al día, preferiblemente en el último tercio de la prueba o cuando la fatiga mental y física sea crítica.',
+      imagen: '/products/sis-gel-beta-fuel-nootropics.jpeg',
     },
   ];
 
