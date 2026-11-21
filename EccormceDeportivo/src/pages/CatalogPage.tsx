@@ -22,6 +22,7 @@ const SLUG_TO_CATEGORY: Record<string, ProductCategory> = {
   'geles-energeticos': 'Geles Energéticos',
   'hidratacion-electrolitos': 'Hidratación y Electrolitos',
   'bebidas-energeticas': 'Bebidas Energéticas',
+  'recuperacion-proteinas': 'Recuperación y Proteínas',
   'packs-rendimiento': 'Packs y Rendimiento',
 };
 
@@ -29,6 +30,7 @@ const CATEGORY_TO_SLUG: Record<string, string> = {
   'Geles Energéticos': 'geles-energeticos',
   'Hidratación y Electrolitos': 'hidratacion-electrolitos',
   'Bebidas Energéticas': 'bebidas-energeticas',
+  'Recuperación y Proteínas': 'recuperacion-proteinas',
   'Packs y Rendimiento': 'packs-rendimiento',
 };
 
@@ -40,7 +42,8 @@ export const CatalogPage: React.FC = () => {
   const [activeProducts, setActiveProducts] = useState<Product[]>([]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [visibleCount, setVisibleCount] = useState(16);
+  const [visibleCount, setVisibleCount] = useState(24);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Resolver categoría inicial desde param
   const initialCategory = useMemo(() => {
@@ -96,7 +99,7 @@ export const CatalogPage: React.FC = () => {
 
   // Resetear paginación cada vez que cambien filtros o búsqueda
   useEffect(() => {
-    setVisibleCount(16);
+    setVisibleCount(24);
   }, [selectedCategory, searchTerm, sortBy]);
 
   const handleCategoryClick = (cat: string) => {
@@ -114,6 +117,7 @@ export const CatalogPage: React.FC = () => {
     'Geles Energéticos', 
     'Hidratación y Electrolitos', 
     'Bebidas Energéticas', 
+    'Recuperación y Proteínas',
     'Packs y Rendimiento'
   ];
 
@@ -127,6 +131,7 @@ export const CatalogPage: React.FC = () => {
       'Geles Energéticos': allCatalogProducts.filter(p => p.categoria === 'Geles Energéticos').length,
       'Hidratación y Electrolitos': allCatalogProducts.filter(p => p.categoria === 'Hidratación y Electrolitos').length,
       'Bebidas Energéticas': allCatalogProducts.filter(p => p.categoria === 'Bebidas Energéticas').length,
+      'Recuperación y Proteínas': allCatalogProducts.filter(p => p.categoria === 'Recuperación y Proteínas').length,
       'Packs y Rendimiento': allCatalogProducts.filter(p => p.categoria === 'Packs y Rendimiento').length,
     };
     return counts;
@@ -172,6 +177,31 @@ export const CatalogPage: React.FC = () => {
   const displayedProducts = useMemo(() => {
     return filteredAndSortedProducts.slice(0, visibleCount);
   }, [filteredAndSortedProducts, visibleCount]);
+
+  // Scroll Infinito Automático: carga más productos conforme el cliente baja en celular o PC
+  useEffect(() => {
+    if (visibleCount >= filteredAndSortedProducts.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + 12, filteredAndSortedProducts.length));
+        }
+      },
+      { threshold: 0.1, rootMargin: '300px' }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [visibleCount, filteredAndSortedProducts.length]);
 
   return (
     <div className="min-h-screen bg-dark-base bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] flex flex-col">
@@ -356,16 +386,29 @@ export const CatalogPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Paginación / Botón Cargar más */}
-            <div className="mt-10 sm:mt-14 flex flex-col items-center justify-center gap-3">
+            {/* Sentinel invisible para disparo automático de Scroll Infinito */}
+            <div ref={observerTarget} className="h-4 w-full pointer-events-none" />
+
+            {/* Contador de estado y Feedback amigable */}
+            <div className="mt-8 sm:mt-12 flex flex-col items-center justify-center gap-2">
               <p className="text-xs text-gray-400 font-mono uppercase tracking-wider">
-                Mostrando <span className="text-white font-bold">{displayedProducts.length}</span> de <span className="text-white font-bold">{filteredAndSortedProducts.length}</span> productos
+                {displayedProducts.length >= filteredAndSortedProducts.length ? (
+                  <span>
+                    Mostrando todos los <span className="text-volt font-bold">{filteredAndSortedProducts.length}</span> productos
+                  </span>
+                ) : (
+                  <span>
+                    Mostrando <span className="text-white font-bold">{displayedProducts.length}</span> de <span className="text-white font-bold">{filteredAndSortedProducts.length}</span> productos
+                  </span>
+                )}
               </p>
+
+              {/* Si quedan productos y el cliente prefiere tocar el botón o su navegador no tiene IntersectionObserver */}
               {visibleCount < filteredAndSortedProducts.length && (
                 <button
                   type="button"
-                  onClick={() => setVisibleCount((prev) => prev + 16)}
-                  className="min-h-[44px] min-w-[44px] px-8 py-3 bg-dark-surface hover:bg-white/5 border border-white/15 hover:border-white/30 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95 shadow-sm"
+                  onClick={() => setVisibleCount((prev) => prev + 12)}
+                  className="mt-2 min-h-[44px] min-w-[44px] px-8 py-2.5 bg-dark-surface hover:bg-white/5 border border-white/15 hover:border-volt/40 text-gray-300 hover:text-white font-semibold text-xs uppercase tracking-wider rounded-xl transition-all active:scale-95 shadow-sm"
                 >
                   Cargar más productos
                 </button>

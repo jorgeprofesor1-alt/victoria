@@ -4,7 +4,9 @@ export type ProductCategory =
   | 'Geles Energéticos'
   | 'Hidratación y Electrolitos'
   | 'Bebidas Energéticas'
-  | 'Packs y Rendimiento';
+  | 'Recuperación y Proteínas'
+  | 'Packs y Rendimiento'
+  | string;
 
 export interface Product {
   id: string;
